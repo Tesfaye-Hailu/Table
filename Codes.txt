@@ -1,0 +1,74 @@
+//Define the IngredientList class
+class IngredientList {
+    constructor() {
+      this.ingredients = ['Fish', 'Chicken', 'Beef', 'Egg', 'Tomatoes', 'Vegetables', 'Burger', 'Pizza', 'Coffee', 'Salad', 'Sandwich'];
+      this.populateTable();
+      this.bindAddIngredientButton();
+    }
+  //Display the list of ingredients in a table
+    populateTable() {
+      const table = document.querySelector('table'); //Get the table element
+  
+      let rowIndex = 0;
+      let colIndex = 0;
+      let newRow = table.insertRow(rowIndex); // // Insert a new row for each group of 4 ingredients
+  
+      for (let i = 0; i < this.ingredients.length; i++) {
+        if (colIndex === 4) {
+          colIndex = 0;
+          rowIndex++;
+          newRow = table.insertRow(rowIndex);
+        }
+  // Insert a new cell for the ingredient
+        const cell = newRow.insertCell(colIndex);
+        cell.innerHTML = this.formatIngredient(this.ingredients[i]);
+        colIndex++;
+      }
+    }
+  
+    bindAddIngredientButton() {
+      const addBtn = document.getElementById('add-ingredient-btn');
+      const input = document.getElementById('ingredient-input');
+  
+      addBtn.addEventListener('click', () => {
+        const newIngredients = input.value.trim().split(',');
+        if (newIngredients.length > 0) {
+          for (let i = 0; i < newIngredients.length; i++) {
+            const newIngredient = newIngredients[i].trim();
+            if (newIngredient.length > 0) {
+              const lowerCasedIngredient = newIngredient.toLowerCase();
+              const isDuplicate = this.ingredients.some((ingredient) => ingredient.toLowerCase() === lowerCasedIngredient);
+              if (!isDuplicate) {
+                this.ingredients.push(newIngredient);
+                this.addIngredient(newIngredient);
+                input.value = '';
+              } else {
+                alert(`"${newIngredient}" is already in the list.`);
+              }
+            }
+          }
+        }
+      });
+    }
+  
+    addIngredient(ingredient) {
+      const table = document.querySelector('table');
+      const rowIndex = Math.floor((this.ingredients.length - 1) / 4);
+      const colIndex = (this.ingredients.length - 1) % 4;
+  
+      if (colIndex === 0) {
+        const newRow = table.insertRow(rowIndex);
+        const cell = newRow.insertCell(colIndex);
+        cell.innerHTML = this.formatIngredient(ingredient);
+      } else {
+        const cell = table.rows[rowIndex].insertCell(colIndex);
+        cell.innerHTML = this.formatIngredient(ingredient);
+      }
+    }
+  
+    formatIngredient(ingredient) {
+      return ingredient.charAt(0).toUpperCase() + ingredient.slice(1).toLowerCase();
+    }
+  }
+  
+  const ingredientList = new IngredientList();
